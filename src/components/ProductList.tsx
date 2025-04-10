@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Product } from '../types';
+import '../styles/ProductList.css';
 
 interface ProductListProps {
   products: Product[];
@@ -27,55 +28,27 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
 
   return (
     <div>
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(5, 1fr)', 
-        gap: '20px',
-        padding: '20px'
-      }}>
+      <div className="product-list-container">
         {currentProducts.map((product) => (
           <div 
             key={product.code} 
             onClick={() => handleProductClick(product.code)}
-            style={{ 
-              border: '1px solid #ccc', 
-              padding: '10px',
-              borderRadius: '8px',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              textAlign: 'center',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease-in-out'
-            }}
-            onMouseOver={(e) => {
-              e.currentTarget.style.transform = 'scale(1.02)';
-              e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
-            }}
-            onMouseOut={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = 'none';
-            }}
+            className="product-card"
           >
             {product.image_url && (
               <img 
                 src={product.image_url} 
                 alt={product.product_name} 
-                style={{ 
-                  width: '100%', 
-                  height: '150px',
-                  objectFit: 'contain',
-                  marginBottom: '10px'
-                }} 
+                className="product-image"
               />
             )}
-            <h3 style={{ margin: '10px 0', fontSize: '1rem' }}>
+            <h3 className="product-name">
               {product.product_name || 'Unnamed Product'}
             </h3>
-            <p style={{ margin: '5px 0', fontSize: '0.9rem' }}>
+            <p className="product-info">
               <strong>Brand:</strong> {product.brands}
             </p>
-            <p style={{ margin: '5px 0', fontSize: '0.9rem' }}>
+            <p className="product-info">
               <strong>Nutriscore:</strong> {product.nutriscore_grade?.toUpperCase()}
             </p>
           </div>
@@ -83,37 +56,21 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
       </div>
       
       {totalPages > 1 && (
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'center', 
-          gap: '20px', 
-          marginTop: '20px',
-          padding: '20px'
-        }}>
+        <div className="pagination-container">
           <button 
             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
-            style={{
-              padding: '8px 16px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-              cursor: 'pointer'
-            }}
+            className="pagination-button"
           >
             Previous
           </button>
-          <span style={{ lineHeight: '32px' }}>
+          <span className="pagination-info">
             Page {currentPage} of {totalPages}
           </span>
           <button 
             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
-            style={{
-              padding: '8px 16px',
-              borderRadius: '4px',
-              border: '1px solid #ccc',
-              cursor: 'pointer'
-            }}
+            className="pagination-button"
           >
             Next
           </button>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Product } from '../types';
+import '../styles/ProductDetail.css';
 
 interface DetailedProduct extends Product {
   categories?: string;
@@ -94,22 +95,16 @@ const ProductDetail: React.FC = () => {
   }, [productId]);
 
   if (loading) {
-    return <div style={{ padding: '20px', textAlign: 'center' }}>Loading product information...</div>;
+    return <div className="loading-container">Loading product information...</div>;
   }
 
   if (error) {
     return (
-      <div style={{ padding: '20px', textAlign: 'center' }}>
+      <div className="error-container">
         <p>{error}</p>
         <button 
           onClick={() => navigate('/')}
-          style={{
-            padding: '10px 20px',
-            marginTop: '20px',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            cursor: 'pointer'
-          }}
+          className="error-button"
         >
           Back to Search
         </button>
@@ -122,74 +117,36 @@ const ProductDetail: React.FC = () => {
   }
 
   return (
-    <div style={{ 
-      padding: '15px', 
-      maxWidth: '1000px', 
-      margin: '0 auto',
-      maxHeight: '100vh',
-      overflowY: 'auto'
-    }}>
+    <div className="product-detail-container">
       <button 
         onClick={() => navigate('/')}
-        style={{
-          padding: '8px 16px',
-          marginBottom: '15px',
-          borderRadius: '4px',
-          border: '1px solid #ccc',
-          cursor: 'pointer',
-          backgroundColor: '#f5f5f5',
-          fontSize: '14px'
-        }}
+        className="back-button"
       >
         ← Back to Search
       </button>
 
       {/* Product Header */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: '200px 1fr', 
-        gap: '20px',
-        marginBottom: '20px',
-        backgroundColor: '#fff',
-        padding: '15px',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-      }}>
-        <div style={{ textAlign: 'center' }}>
+      <div className="product-header">
+        <div className="product-image-container">
           {product.image_url ? (
             <img 
               src={product.image_url} 
               alt={product.product_name} 
-              style={{ 
-                width: '100%', 
-                maxWidth: '200px',
-                height: '200px',
-                objectFit: 'contain',
-                borderRadius: '8px',
-                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-              }} 
+              className="product-image"
             />
           ) : (
-            <div style={{ 
-              width: '100%', 
-              height: '200px', 
-              backgroundColor: '#f5f5f5',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: '8px'
-            }}>
+            <div className="no-image">
               No Image Available
             </div>
           )}
         </div>
         <div>
-          <h1 style={{ marginBottom: '10px', fontSize: '20px' }}>{product.product_name || 'Unnamed Product'}</h1>
-          <div style={{ marginBottom: '10px' }}>
-            <p style={{ marginBottom: '5px', fontSize: '14px' }}><strong>Brand:</strong> {product.brands || 'Unknown'}</p>
-            <p style={{ marginBottom: '5px', fontSize: '14px' }}><strong>Barcode:</strong> {product.code}</p>
+          <h1 className="product-title">{product.product_name || 'Unnamed Product'}</h1>
+          <div className="product-info">
+            <p className="product-info-text"><strong>Brand:</strong> {product.brands || 'Unknown'}</p>
+            <p className="product-info-text"><strong>Barcode:</strong> {product.code}</p>
             {product.categories && (
-              <p style={{ marginBottom: '5px', fontSize: '14px' }}><strong>Category:</strong> {product.categories.split(',')[0]}</p>
+              <p className="product-info-text"><strong>Category:</strong> {product.categories.split(',')[0]}</p>
             )}
           </div>
         </div>
@@ -197,53 +154,26 @@ const ProductDetail: React.FC = () => {
 
       {/* Nutri-Score Section */}
       {product.nutriscore_grade && (
-        <div style={{ 
-          backgroundColor: '#fff',
-          padding: '15px',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          marginBottom: '20px'
-        }}>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: '120px 1fr', 
-            gap: '20px',
-            alignItems: 'center'
-          }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ 
-                fontSize: '48px', 
-                fontWeight: 'bold',
-                color: getNutriScoreColor(product.nutriscore_grade),
-                marginBottom: '5px'
-              }}>
+        <div className="nutri-score-section">
+          <div className="nutri-score-grid">
+            <div className="product-image-container">
+              <div className="nutri-score-grade" style={{ color: getNutriScoreColor(product.nutriscore_grade) }}>
                 {product.nutriscore_grade.toUpperCase()}
               </div>
-              <h3 style={{ margin: '0', color: '#666', fontSize: '14px' }}>Nutri-Score</h3>
+              <h3 className="nutri-score-label">Nutri-Score</h3>
             </div>
             <div>
-              <h2 style={{ marginBottom: '10px', color: '#333', fontSize: '16px' }}>Nutritional Quality</h2>
-              <p style={{ lineHeight: '1.4', color: '#666', marginBottom: '10px', fontSize: '14px' }}>
+              <h2 className="nutri-score-title">Nutritional Quality</h2>
+              <p className="nutri-score-description">
                 The Nutri-Score is a nutritional rating system that helps you quickly identify the nutritional quality of food products. 
                 It ranges from A (best) to E (worst), taking into account both positive and negative nutrients.
               </p>
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(5, 1fr)', 
-                gap: '5px',
-                marginTop: '10px'
-              }}>
+              <div className="nutri-score-scale">
                 {['A', 'B', 'C', 'D', 'E'].map((grade) => (
                   <div 
                     key={grade}
-                    style={{ 
-                      textAlign: 'center',
-                      padding: '5px',
-                      backgroundColor: getNutriScoreColor(grade.toLowerCase()),
-                      borderRadius: '4px',
-                      color: '#fff',
-                      fontSize: '12px'
-                    }}
+                    className="nutri-score-grade-item"
+                    style={{ backgroundColor: getNutriScoreColor(grade.toLowerCase()) }}
                   >
                     {grade}
                   </div>
@@ -255,54 +185,26 @@ const ProductDetail: React.FC = () => {
       )}
 
       {/* Other Scores */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: 'repeat(2, 1fr)', 
-        gap: '15px',
-        marginBottom: '20px'
-      }}>
+      <div className="other-scores-container">
         {product.nova_group && (
-          <div style={{ 
-            backgroundColor: '#fff',
-            padding: '15px',
-            borderRadius: '8px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-          }}>
-            <h3 style={{ marginBottom: '5px', color: '#666', fontSize: '14px' }}>NOVA Group</h3>
-            <div style={{ 
-              fontSize: '36px', 
-              fontWeight: 'bold',
-              color: getNovaGroupColor(product.nova_group),
-              marginBottom: '5px'
-            }}>
+          <div className="score-item">
+            <h3 className="score-title">NOVA Group</h3>
+            <div className="score-value" style={{ color: getNovaGroupColor(product.nova_group) }}>
               {product.nova_group}
             </div>
-            <p style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>
-              Level of food processing
-            </p>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(4, 1fr)', 
-              gap: '5px',
-              marginTop: '5px'
-            }}>
+            <p className="score-description">Level of food processing</p>
+            <div className="score-scale">
               {[1, 2, 3, 4].map((group) => (
                 <div 
                   key={group}
-                  style={{ 
-                    textAlign: 'center',
-                    padding: '3px',
-                    backgroundColor: getNovaGroupColor(group),
-                    borderRadius: '4px',
-                    color: '#fff',
-                    fontSize: '10px'
-                  }}
+                  className="score-item"
+                  style={{ backgroundColor: getNovaGroupColor(group) }}
                 >
                   {group}
                 </div>
               ))}
             </div>
-            <p style={{ fontSize: '10px', color: '#666', marginTop: '5px' }}>
+            <p className="score-notes">
               1: Unprocessed or minimally processed foods<br />
               2: Processed culinary ingredients<br />
               3: Processed foods<br />
@@ -312,47 +214,24 @@ const ProductDetail: React.FC = () => {
         )}
         
         {product.ecoscore_grade && (
-          <div style={{ 
-            backgroundColor: '#fff',
-            padding: '15px',
-            borderRadius: '8px',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-          }}>
-            <h3 style={{ marginBottom: '5px', color: '#666', fontSize: '14px' }}>Eco-Score</h3>
-            <div style={{ 
-              fontSize: '36px', 
-              fontWeight: 'bold',
-              color: getEcoScoreColor(product.ecoscore_grade),
-              marginBottom: '5px'
-            }}>
+          <div className="score-item">
+            <h3 className="score-title">Eco-Score</h3>
+            <div className="score-value" style={{ color: getEcoScoreColor(product.ecoscore_grade) }}>
               {product.ecoscore_grade.toUpperCase()}
             </div>
-            <p style={{ fontSize: '12px', color: '#666', marginBottom: '5px' }}>
-              Environmental impact
-            </p>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(5, 1fr)', 
-              gap: '5px',
-              marginTop: '5px'
-            }}>
+            <p className="score-description">Environmental impact</p>
+            <div className="score-scale">
               {['A', 'B', 'C', 'D', 'E'].map((grade) => (
                 <div 
                   key={grade}
-                  style={{ 
-                    textAlign: 'center',
-                    padding: '3px',
-                    backgroundColor: getEcoScoreColor(grade.toLowerCase()),
-                    borderRadius: '4px',
-                    color: '#fff',
-                    fontSize: '10px'
-                  }}
+                  className="score-item"
+                  style={{ backgroundColor: getEcoScoreColor(grade.toLowerCase()) }}
                 >
                   {grade}
                 </div>
               ))}
             </div>
-            <p style={{ fontSize: '10px', color: '#666', marginTop: '5px' }}>
+            <p className="score-notes">
               A: Minimal environmental impact<br />
               E: Significant environmental impact
             </p>
@@ -361,71 +240,49 @@ const ProductDetail: React.FC = () => {
       </div>
 
       {/* Nutrition Facts */}
-      <div style={{ 
-        backgroundColor: '#fff',
-        padding: '15px',
-        borderRadius: '8px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-        marginBottom: '20px'
-      }}>
-        <h2 style={{ marginBottom: '15px', color: '#333', fontSize: '16px' }}>Nutrition Facts</h2>
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(2, 1fr)', 
-          gap: '15px'
-        }}>
+      <div className="nutrition-facts-container">
+        <h2 className="nutrition-facts-title">Nutrition Facts</h2>
+        <div className="nutrition-facts-grid">
           {product['energy-kcal_100g'] && (
-            <div style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                <span>Energy</span>
-                <span><strong>{product['energy-kcal_100g']} kcal</strong></span>
-              </div>
-              <div style={{ fontSize: '10px', color: '#666' }}>per 100g</div>
+            <div className="nutrition-fact-item">
+              <div className="nutrition-fact-label">Energy</div>
+              <div className="nutrition-fact-value"><strong>{product['energy-kcal_100g']} kcal</strong></div>
+              <div className="nutrition-fact-unit">per 100g</div>
             </div>
           )}
           {product.proteins_100g && (
-            <div style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                <span>Proteins</span>
-                <span><strong>{product.proteins_100g}g</strong></span>
-              </div>
-              <div style={{ fontSize: '10px', color: '#666' }}>per 100g</div>
+            <div className="nutrition-fact-item">
+              <div className="nutrition-fact-label">Proteins</div>
+              <div className="nutrition-fact-value"><strong>{product.proteins_100g}g</strong></div>
+              <div className="nutrition-fact-unit">per 100g</div>
             </div>
           )}
           {product.fat_100g && (
-            <div style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                <span>Fat</span>
-                <span><strong>{product.fat_100g}g</strong></span>
-              </div>
-              <div style={{ fontSize: '10px', color: '#666' }}>per 100g</div>
+            <div className="nutrition-fact-item">
+              <div className="nutrition-fact-label">Fat</div>
+              <div className="nutrition-fact-value"><strong>{product.fat_100g}g</strong></div>
+              <div className="nutrition-fact-unit">per 100g</div>
             </div>
           )}
           {product.carbohydrates_100g && (
-            <div style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                <span>Carbohydrates</span>
-                <span><strong>{product.carbohydrates_100g}g</strong></span>
-              </div>
-              <div style={{ fontSize: '10px', color: '#666' }}>per 100g</div>
+            <div className="nutrition-fact-item">
+              <div className="nutrition-fact-label">Carbohydrates</div>
+              <div className="nutrition-fact-value"><strong>{product.carbohydrates_100g}g</strong></div>
+              <div className="nutrition-fact-unit">per 100g</div>
             </div>
           )}
           {product.sugars_100g && (
-            <div style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                <span>Sugars</span>
-                <span><strong>{product.sugars_100g}g</strong></span>
-              </div>
-              <div style={{ fontSize: '10px', color: '#666' }}>per 100g</div>
+            <div className="nutrition-fact-item">
+              <div className="nutrition-fact-label">Sugars</div>
+              <div className="nutrition-fact-value"><strong>{product.sugars_100g}g</strong></div>
+              <div className="nutrition-fact-unit">per 100g</div>
             </div>
           )}
           {product.salt_100g && (
-            <div style={{ padding: '8px', borderBottom: '1px solid #eee' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '14px' }}>
-                <span>Salt</span>
-                <span><strong>{product.salt_100g}g</strong></span>
-              </div>
-              <div style={{ fontSize: '10px', color: '#666' }}>per 100g</div>
+            <div className="nutrition-fact-item">
+              <div className="nutrition-fact-label">Salt</div>
+              <div className="nutrition-fact-value"><strong>{product.salt_100g}g</strong></div>
+              <div className="nutrition-fact-unit">per 100g</div>
             </div>
           )}
         </div>
@@ -433,29 +290,23 @@ const ProductDetail: React.FC = () => {
 
       {/* Ingredients */}
       {product.ingredients_text && (
-        <div style={{ 
-          backgroundColor: '#fff',
-          padding: '15px',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          marginBottom: '20px'
-        }}>
-          <h2 style={{ marginBottom: '15px', color: '#333', fontSize: '16px' }}>Ingredients</h2>
+        <div className="ingredients-container">
+          <h2 className="ingredients-title">Ingredients</h2>
           {isTranslating ? (
-            <p style={{ color: '#666', fontStyle: 'italic', fontSize: '14px' }}>Translating ingredients...</p>
+            <p className="ingredients-translating">Translating ingredients...</p>
           ) : (
             <>
               {translatedIngredients ? (
                 <>
-                  <p style={{ lineHeight: '1.4', marginBottom: '10px', fontSize: '14px' }}>
+                  <p className="ingredients-original">
                     <strong>Original:</strong> {product.ingredients_text}
                   </p>
-                  <p style={{ lineHeight: '1.4', color: '#666', fontSize: '14px' }}>
+                  <p className="ingredients-translated">
                     <strong>Translated:</strong> {translatedIngredients}
                   </p>
                 </>
               ) : (
-                <p style={{ lineHeight: '1.4', fontSize: '14px' }}>{product.ingredients_text}</p>
+                <p className="ingredients-text">{product.ingredients_text}</p>
               )}
             </>
           )}
@@ -464,39 +315,21 @@ const ProductDetail: React.FC = () => {
 
       {/* Allergens */}
       {product.allergens && (
-        <div style={{ 
-          backgroundColor: '#fff',
-          padding: '15px',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          marginBottom: '20px'
-        }}>
-          <h2 style={{ marginBottom: '15px', color: '#333', fontSize: '16px' }}>Allergens</h2>
-          <p style={{ lineHeight: '1.4', fontSize: '14px' }}>{product.allergens}</p>
+        <div className="allergens-container">
+          <h2 className="allergens-title">Allergens</h2>
+          <p className="allergens-text">{product.allergens}</p>
         </div>
       )}
 
       {/* Labels */}
       {product.labels_tags && product.labels_tags.length > 0 && (
-        <div style={{ 
-          backgroundColor: '#fff',
-          padding: '15px',
-          borderRadius: '8px',
-          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-          marginBottom: '20px'
-        }}>
-          <h2 style={{ marginBottom: '15px', color: '#333', fontSize: '16px' }}>Certifications & Labels</h2>
-          <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
+        <div className="labels-container">
+          <h2 className="labels-title">Certifications & Labels</h2>
+          <div className="labels-grid">
             {product.labels_tags.map((label, index) => (
               <span 
                 key={index}
-                style={{
-                  padding: '6px 10px',
-                  backgroundColor: '#f0f0f0',
-                  borderRadius: '16px',
-                  fontSize: '12px',
-                  color: '#666'
-                }}
+                className="label-item"
               >
                 {formatLabel(label)}
               </span>
