@@ -21,7 +21,7 @@ A simple React + TypeScript app that lets users search food products and view nu
 
 ## Live Demo
 
-
+https://food-nutrition-finder.netlify.app/
 
 ## License
 
