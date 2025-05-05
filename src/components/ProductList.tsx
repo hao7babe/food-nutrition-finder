@@ -23,14 +23,32 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
   };
 
   if (products.length === 0) {
-    return <p>No products found. Try another search.</p>;
+    return (
+      <section className="welcome-message">
+        <h2>Welcome to Food Nutrition Finder! 🍎</h2>
+        <p>Here's how to get started:</p>
+        <ol>
+          <li>Search for any food product using the search bar above</li>
+          <li>You'll see detailed information including:</li>
+          <ul>
+            <li>Nutritional facts (calories, proteins, fats, etc.)</li>
+            <li>Nutri-Score rating (A to E)</li>
+            <li>Ingredients list</li>
+            <li>Allergen information</li>
+            <li>Environmental impact (Eco-Score)</li>
+          </ul>
+          <li>Click on any product to view its complete details</li>
+        </ol>
+        <p>Try searching for products like "coca cola", "chocolate", or "pasta" to get started!</p>
+      </section>
+    );
   }
 
   return (
-    <div>
-      <div className="product-list-container">
+    <section>
+      <ul className="product-list-container">
         {currentProducts.map((product) => (
-          <div 
+          <li 
             key={product.code} 
             onClick={() => handleProductClick(product.code)}
             className="product-card"
@@ -51,12 +69,12 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
             <p className="product-info">
               <strong>Nutriscore:</strong> {product.nutriscore_grade?.toUpperCase()}
             </p>
-          </div>
+          </li>
         ))}
-      </div>
+      </ul>
       
       {totalPages > 1 && (
-        <div className="pagination-container">
+        <nav className="pagination-container">
           <button 
             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
@@ -74,9 +92,9 @@ const ProductList: React.FC<ProductListProps> = ({ products }) => {
           >
             Next
           </button>
-        </div>
+        </nav>
       )}
-    </div>
+    </section>
   );
 };
 

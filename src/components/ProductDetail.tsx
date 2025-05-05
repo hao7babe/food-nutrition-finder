@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Product } from '../types';
 import '../styles/ProductDetail.css';
 
@@ -31,43 +31,6 @@ const ProductDetail: React.FC = () => {
   const [product, setProduct] = useState<DetailedProduct | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [translatedIngredients, setTranslatedIngredients] = useState<string | null>(null);
-  const [isTranslating, setIsTranslating] = useState(false);
-
-  // Function to detect if text is in English
-  const isEnglish = (text: string): boolean => {
-    // Simple heuristic: check if the text contains common English words
-    const commonEnglishWords = ['the', 'and', 'of', 'to', 'in', 'is', 'it', 'that', 'for', 'on'];
-    const textLower = text.toLowerCase();
-    return commonEnglishWords.some(word => textLower.includes(word));
-  };
-
-  // Function to translate text to English using LibreTranslate
-  const translateToEnglish = async (text: string) => {
-    try {
-      setIsTranslating(true);
-      const response = await fetch('https://libretranslate.de/translate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          q: text,
-          source: 'auto',
-          target: 'en',
-          format: 'text'
-        })
-      });
-
-      const data = await response.json();
-      setTranslatedIngredients(data.translatedText);
-    } catch (error) {
-      console.error('Translation error:', error);
-      setTranslatedIngredients(null);
-    } finally {
-      setIsTranslating(false);
-    }
-  };
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -77,10 +40,6 @@ const ProductDetail: React.FC = () => {
         
         if (data.status === 1) {
           setProduct(data.product);
-          // Check if ingredients text exists and is not in English
-          if (data.product.ingredients_text && !isEnglish(data.product.ingredients_text)) {
-            translateToEnglish(data.product.ingredients_text);
-          }
         } else {
           setError('Product not found');
         }
@@ -95,20 +54,20 @@ const ProductDetail: React.FC = () => {
   }, [productId]);
 
   if (loading) {
-    return <div className="loading-container">Loading product information...</div>;
+    return <section className="loading-container">Loading product information...</section>;
   }
 
   if (error) {
     return (
-      <div className="error-container">
+      <section className="error-container">
         <p>{error}</p>
-        <button 
-          onClick={() => navigate('/')}
+        <Link 
+          to="/"
           className="error-button"
         >
           Back to Search
-        </button>
-      </div>
+        </Link>
+      </section>
     );
   }
 
@@ -117,17 +76,17 @@ const ProductDetail: React.FC = () => {
   }
 
   return (
-    <div className="product-detail-container">
-      <button 
-        onClick={() => navigate('/')}
+    <article className="product-detail-container">
+      <Link 
+        to="/"
         className="back-button"
       >
         ← Back to Search
-      </button>
+      </Link>
 
       {/* Product Header */}
-      <div className="product-header">
-        <div className="product-image-container">
+      <header className="product-header">
+        <figure className="product-image-container">
           {product.image_url ? (
             <img 
               src={product.image_url} 
@@ -139,7 +98,7 @@ const ProductDetail: React.FC = () => {
               No Image Available
             </div>
           )}
-        </div>
+        </figure>
         <div>
           <h1 className="product-title">{product.product_name || 'Unnamed Product'}</h1>
           <div className="product-info">
@@ -150,18 +109,18 @@ const ProductDetail: React.FC = () => {
             )}
           </div>
         </div>
-      </div>
+      </header>
 
       {/* Nutri-Score Section */}
       {product.nutriscore_grade && (
-        <div className="nutri-score-section">
+        <section className="nutri-score-section">
           <div className="nutri-score-grid">
-            <div className="product-image-container">
+            <figure className="product-image-container">
               <div className="nutri-score-grade" style={{ color: getNutriScoreColor(product.nutriscore_grade) }}>
                 {product.nutriscore_grade.toUpperCase()}
               </div>
               <h3 className="nutri-score-label">Nutri-Score</h3>
-            </div>
+            </figure>
             <div>
               <h2 className="nutri-score-title">Nutritional Quality</h2>
               <p className="nutri-score-description">
@@ -181,13 +140,13 @@ const ProductDetail: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
+        </section>
       )}
 
       {/* Other Scores */}
-      <div className="other-scores-container">
+      <section className="other-scores-container">
         {product.nova_group && (
-          <div className="score-item">
+          <article className="score-item">
             <h3 className="score-title">NOVA Group</h3>
             <div className="score-value" style={{ color: getNovaGroupColor(product.nova_group) }}>
               {product.nova_group}
@@ -210,11 +169,11 @@ const ProductDetail: React.FC = () => {
               3: Processed foods<br />
               4: Ultra-processed foods
             </p>
-          </div>
+          </article>
         )}
         
         {product.ecoscore_grade && (
-          <div className="score-item">
+          <article className="score-item">
             <h3 className="score-title">Eco-Score</h3>
             <div className="score-value" style={{ color: getEcoScoreColor(product.ecoscore_grade) }}>
               {product.ecoscore_grade.toUpperCase()}
@@ -235,95 +194,78 @@ const ProductDetail: React.FC = () => {
               A: Minimal environmental impact<br />
               E: Significant environmental impact
             </p>
-          </div>
+          </article>
         )}
-      </div>
+      </section>
 
       {/* Nutrition Facts */}
-      <div className="nutrition-facts-container">
+      <section className="nutrition-facts-container">
         <h2 className="nutrition-facts-title">Nutrition Facts</h2>
         <div className="nutrition-facts-grid">
           {product['energy-kcal_100g'] && (
-            <div className="nutrition-fact-item">
+            <article className="nutrition-fact-item">
               <div className="nutrition-fact-label">Energy</div>
               <div className="nutrition-fact-value"><strong>{product['energy-kcal_100g']} kcal</strong></div>
               <div className="nutrition-fact-unit">per 100g</div>
-            </div>
+            </article>
           )}
           {product.proteins_100g && (
-            <div className="nutrition-fact-item">
+            <article className="nutrition-fact-item">
               <div className="nutrition-fact-label">Proteins</div>
               <div className="nutrition-fact-value"><strong>{product.proteins_100g}g</strong></div>
               <div className="nutrition-fact-unit">per 100g</div>
-            </div>
+            </article>
           )}
           {product.fat_100g && (
-            <div className="nutrition-fact-item">
+            <article className="nutrition-fact-item">
               <div className="nutrition-fact-label">Fat</div>
               <div className="nutrition-fact-value"><strong>{product.fat_100g}g</strong></div>
               <div className="nutrition-fact-unit">per 100g</div>
-            </div>
+            </article>
           )}
           {product.carbohydrates_100g && (
-            <div className="nutrition-fact-item">
+            <article className="nutrition-fact-item">
               <div className="nutrition-fact-label">Carbohydrates</div>
               <div className="nutrition-fact-value"><strong>{product.carbohydrates_100g}g</strong></div>
               <div className="nutrition-fact-unit">per 100g</div>
-            </div>
+            </article>
           )}
           {product.sugars_100g && (
-            <div className="nutrition-fact-item">
+            <article className="nutrition-fact-item">
               <div className="nutrition-fact-label">Sugars</div>
               <div className="nutrition-fact-value"><strong>{product.sugars_100g}g</strong></div>
               <div className="nutrition-fact-unit">per 100g</div>
-            </div>
+            </article>
           )}
           {product.salt_100g && (
-            <div className="nutrition-fact-item">
+            <article className="nutrition-fact-item">
               <div className="nutrition-fact-label">Salt</div>
               <div className="nutrition-fact-value"><strong>{product.salt_100g}g</strong></div>
               <div className="nutrition-fact-unit">per 100g</div>
-            </div>
+            </article>
           )}
         </div>
-      </div>
+      </section>
 
       {/* Ingredients */}
       {product.ingredients_text && (
-        <div className="ingredients-container">
+        <section className="ingredients-container">
           <h2 className="ingredients-title">Ingredients</h2>
-          {isTranslating ? (
-            <p className="ingredients-translating">Translating ingredients...</p>
-          ) : (
-            <>
-              {translatedIngredients ? (
-                <>
-                  <p className="ingredients-original">
-                    <strong>Original:</strong> {product.ingredients_text}
-                  </p>
-                  <p className="ingredients-translated">
-                    <strong>Translated:</strong> {translatedIngredients}
-                  </p>
-                </>
-              ) : (
-                <p className="ingredients-text">{product.ingredients_text}</p>
-              )}
-            </>
-          )}
-        </div>
+          <p className="ingredients-text">{product.ingredients_text}</p>
+        </section>
       )}
 
       {/* Allergens */}
       {product.allergens && (
-        <div className="allergens-container">
+        <section className="allergens-container">
           <h2 className="allergens-title">Allergens</h2>
           <p className="allergens-text">{product.allergens}</p>
-        </div>
+        </section>
       )}
 
       {/* Labels */}
       {product.labels_tags && product.labels_tags.length > 0 && (
-        <div className="labels-container">
+        <section className="labels-container">
           <h2 className="labels-title">Certifications & Labels</h2>
           <div className="labels-grid">
             {product.labels_tags.map((label, index) => (
@@ -335,9 +277,9 @@ const ProductDetail: React.FC = () => {
               </span>
             ))}
           </div>
-        </div>
+        </section>
       )}
-    </div>
+    </article>
   );
 };
 

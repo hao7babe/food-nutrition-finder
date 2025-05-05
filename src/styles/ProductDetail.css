@@ -6,14 +6,29 @@
   overflow-y: auto;
 }
 
-.back-button {
+.back-button,
+.error-button {
+  display: inline-block;
   padding: 8px 16px;
-  margin-bottom: 15px;
   border-radius: 4px;
   border: 1px solid #ccc;
   cursor: pointer;
   background-color: #f5f5f5;
   font-size: 14px;
+  text-decoration: none;
+  color: inherit;
+  text-align: center;
+}
+
+.back-button:hover,
+.error-button:hover {
+  background-color: #e5e5e5;
+}
+
+.back-button:focus,
+.error-button:focus {
+  outline: 2px solid #007bff;
+  outline-offset: 2px;
 }
 
 .product-header {
@@ -127,12 +142,4 @@
 .error-container {
   padding: 20px;
   text-align: center;
-}
-
-.error-button {
-  padding: 10px 20px;
-  margin-top: 20px;
-  border-radius: 4px;
-  border: 1px solid #ccc;
-  cursor: pointer;
 } 
